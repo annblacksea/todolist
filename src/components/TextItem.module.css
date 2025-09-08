@@ -1,0 +1,16 @@
+.toDoListItem {
+	display: flex;
+	justify-content: space-between;
+}
+
+.textSelection {
+	background-color: brown;
+	color: azure;
+}
+
+.buttonsContainer {
+}
+
+.button + .button {
+	margin-left: 30px;
+}
