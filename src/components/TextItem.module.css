@@ -1,14 +1,12 @@
 .toDoListItem {
 	display: flex;
+	width: 100%;
 	justify-content: space-between;
+	align-items: center;
 }
 
-.textSelection {
-	background-color: brown;
-	color: azure;
-}
-
-.buttonsContainer {
+.text {
+	max-width: 400px;
 }
 
 .button + .button {

@@ -1,12 +1,6 @@
 import styles from './TextItem.module.css';
 
-export function TextItem({
-	text,
-	id,
-	updateItemClick,
-	updateList,
-	textToSearch,
-}) {
+export function TextItem({ text, id, updateItemClick, updateList }) {
 	const deleteItem = (id) => {
 		fetch(`http://localhost:3000/todos/${id}`, {
 			method: 'DELETE',
@@ -14,10 +8,8 @@ export function TextItem({
 	};
 
 	return (
-		<div
-			className={`${styles.toDoListItem}${textToSearch && text.includes(textToSearch) ? ` ${styles.textSelection}` : ''}`}
-		>
-			{text}
+		<div className={styles.toDoListItem}>
+			<p className={styles.text}>{text}</p>
 			<div className={styles.buttonsContainer}>
 				<button
 					className={styles.button}

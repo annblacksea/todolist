@@ -1,3 +1,7 @@
 .controlItem + .controlItem {
 	margin-left: 15px;
 }
+
+.sortBtton {
+	border: 2px solid brown;
+}

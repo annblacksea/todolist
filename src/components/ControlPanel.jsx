@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import styles from './ControlPanel.module.css';
 
 export function ControlPanel({
@@ -6,10 +7,22 @@ export function ControlPanel({
 	textToSearch,
 	setTextToSearch,
 }) {
+	const timerRef = useRef(null);
+	const [inputValue, setInputValue] = useState(textToSearch);
+
+	const handleInputChange = (event) => {
+		setInputValue(event.target.value);
+		clearTimeout(timerRef.current);
+		timerRef.current = setTimeout(() => {
+			setTextToSearch(event.target.value);
+		}, 2000);
+	};
+
 	return (
-		<div>
+		<form>
 			<button
-				className={styles.controlItem}
+				type="button"
+				className={`${styles.controlItem} ${isSort ? styles.sortBtton : ''} `}
 				onClick={() => setIsSort(!isSort)}
 			>
 				По алфавиту
@@ -18,9 +31,9 @@ export function ControlPanel({
 				className={styles.controlItem}
 				type="text"
 				placeholder="Поиск..."
-				value={textToSearch}
-				onChange={({ target }) => setTextToSearch(target.value)}
+				value={inputValue}
+				onChange={handleInputChange}
 			/>
-		</div>
+		</form>
 	);
 }

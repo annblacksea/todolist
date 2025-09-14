@@ -6,7 +6,7 @@ export function AddItemForm({ updateList, setText, text }) {
 		fetch('http://localhost:3000/todos', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json;charset=utf-8' },
-			body: JSON.stringify({ text: text }),
+			body: JSON.stringify({ text: text, completed: false }),
 		})
 			.then((response) => response.json())
 			.then((newList) => {

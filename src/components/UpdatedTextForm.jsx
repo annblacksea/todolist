@@ -21,16 +21,25 @@ export function UpdatedTextForm({ text, canselForm, id, onUpdate }) {
 	};
 
 	return (
-		<form onSubmit={updateItem}>
-			<input
+		<form className={styles.updateForm} onSubmit={updateItem}>
+			<textarea
+				className={styles.text}
 				type="text"
 				value={value}
 				onChange={({ target }) => setValue(target.value)}
 			/>
-			<button type="button" onClick={canselForm}>
-				Закрыть
-			</button>
-			<button type="submit">Изменить</button>
+			<div className={styles.buttonsContainer}>
+				<button
+					className={styles.button}
+					type="button"
+					onClick={canselForm}
+				>
+					Закрыть
+				</button>
+				<button className={styles.button} type="submit">
+					Изменить
+				</button>
+			</div>
 		</form>
 	);
 }

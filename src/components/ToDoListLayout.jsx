@@ -15,9 +15,21 @@ export function ToDoListLayout() {
 	const [isSort, setIsSort] = useState(false);
 	const [textToSearch, setTextToSearch] = useState('');
 
-	useEffect(() => {
-		setIsLoading(true);
-		fetch('http://localhost:3000/todos')
+	const fetchServer = (sort = false, textToSearch = '') => {
+		let url = 'http://localhost:3000/todos';
+
+		let params = '';
+
+		if (sort) {
+			params += `_sort=text&_order=desc`;
+		}
+		if (textToSearch) {
+			params += (params ? '&' : '') + `text_like=${textToSearch}`;
+		}
+
+		if (params) url = url + '?' + params;
+
+		fetch(url)
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error();
@@ -27,7 +39,12 @@ export function ToDoListLayout() {
 			.then((loadedData) => setList(loadedData))
 			.catch(() => setErrorFlag(true))
 			.finally(() => setIsLoading(false));
-	}, []);
+	};
+
+	useEffect(() => {
+		setIsLoading(true);
+		fetchServer(isSort, textToSearch);
+	}, [isSort, textToSearch]);
 
 	const updateListWithNewItem = (newList) => {
 		setList((prevList) => [...prevList, newList]);
@@ -44,8 +61,31 @@ export function ToDoListLayout() {
 
 	const updateListItem = (updatedItem) => {
 		setList((prevList) =>
-			prevList.map((item) => (item.id === updatedItem.id ? updatedItem : item)),
+			prevList.map((item) =>
+				item.id === updatedItem.id ? updatedItem : item,
+			),
 		);
+	};
+
+	const changeCompleted = (id) => {
+		const item = list.find((item) => item.id === id);
+		const newCompleted = !item.completed;
+
+		fetch(`http://localhost:3000/todos/${id}`, {
+			method: 'PATCH',
+			headers: { 'Content-Type': 'application/json;charset=utf-8' },
+			body: JSON.stringify({
+				completed: newCompleted,
+			}),
+		})
+			.then((response) => response.json())
+			.then((updatedItem) => {
+				setList((prevList) =>
+					prevList.map((item) =>
+						item.id === updatedItem.id ? updatedItem : item,
+					),
+				);
+			});
 	};
 
 	return (
@@ -56,42 +96,55 @@ export function ToDoListLayout() {
 				textToSearch={textToSearch}
 				setTextToSearch={setTextToSearch}
 			/>
-			{(isLoading && <p>Loading...</p>) || (errorFlag && <p>ERROR</p>) || (
-				<>
-					<ul className={styles.toDoList}>
-						{(isSort
-							? [...list].sort((a, b) => a.text.localeCompare(b.text, 'ru'))
-							: list
-						).map(({ id, text }) => {
-							return (
-								<li key={id}>
-									{updatingID === id ? (
-										<UpdatedTextForm
-											text={updatingText}
-											canselForm={() => setUpdatingID(null)}
-											id={updatingID}
-											onUpdate={updateListItem}
-										/>
-									) : (
-										<TextItem
-											text={text}
-											id={id}
-											updateItemClick={updateItemClick}
-											updateList={updateListWithoutItem}
-											textToSearch={textToSearch}
-										/>
-									)}
-								</li>
-							);
-						})}
-					</ul>
-					<AddItemForm
-						updateList={updateListWithNewItem}
-						text={text}
-						setText={setText}
-					/>
-				</>
-			)}
+			{(isLoading && <p>Loading...</p>) ||
+				(errorFlag && <p>ERROR</p>) || (
+					<>
+						<ul className={styles.toDoList}>
+							{list.map(({ id, text, completed }) => {
+								return (
+									<li className={styles.listItem} key={id}>
+										{updatingID === id ? (
+											<UpdatedTextForm
+												text={updatingText}
+												canselForm={() =>
+													setUpdatingID(null)
+												}
+												id={updatingID}
+												onUpdate={updateListItem}
+											/>
+										) : (
+											<>
+												<input
+													type="checkbox"
+													checked={completed}
+													onChange={() =>
+														changeCompleted(id)
+													}
+												/>
+												<TextItem
+													text={text}
+													id={id}
+													updateItemClick={
+														updateItemClick
+													}
+													updateList={
+														updateListWithoutItem
+													}
+													textToSearch={textToSearch}
+												/>
+											</>
+										)}
+									</li>
+								);
+							})}
+						</ul>
+						<AddItemForm
+							updateList={updateListWithNewItem}
+							text={text}
+							setText={setText}
+						/>
+					</>
+				)}
 		</section>
 	);
 }

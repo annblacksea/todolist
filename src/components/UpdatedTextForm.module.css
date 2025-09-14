@@ -1,1 +1,16 @@
+.updateForm {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
 
+.text {
+	flex: 1;
+	max-width: 430px;
+	min-height: 50px;
+	resize: vertical;
+}
+
+.button + .button {
+	margin-left: 30px;
+}
