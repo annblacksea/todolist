@@ -1,8 +1,9 @@
 .toDoListItem {
 	display: flex;
 	width: 100%;
-	justify-content: space-between;
+	justify-content: start;
 	align-items: center;
+	gap: 3%;
 }
 
 .text {

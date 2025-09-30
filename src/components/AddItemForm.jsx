@@ -1,9 +1,10 @@
+import { API_ENDPOINT } from '../constants/API';
 import styles from './AddItemForm.module.css';
 
 export function AddItemForm({ updateList, setText, text }) {
 	const addItem = (event) => {
 		event.preventDefault();
-		fetch('http://localhost:3000/todos', {
+		fetch(API_ENDPOINT + 'todos', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json;charset=utf-8' },
 			body: JSON.stringify({ text: text, completed: false }),
